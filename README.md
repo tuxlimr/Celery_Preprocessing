@@ -8,7 +8,7 @@ This is a simple example about integrating Celery in Django website, it uses cel
 
 # Dependecies
 
-* celery==4.4.4
+* Celery==4.4.4
 * Django==3.0.7
 * future==0.18.2
 * RabbitMQ 3.5.6
@@ -16,7 +16,6 @@ This is a simple example about integrating Celery in Django website, it uses cel
 # How to run:
 
 ```
-  git clone https://github.com/sunshineatnoon/Django-Celery-Example.git
   cd Django-Celery-Example
   /usr/local/sbin/rabbitmq-server
   celery -A celery_try worker -l info
