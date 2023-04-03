@@ -1,0 +1,46 @@
+import requests
+import  pandas  as pd
+
+def get_premium(underlying="NIFTY", type='CE'):
+
+    url = f'https://www.nseindia.com/api/option-chain-indices?symbol={underlying}'
+
+    headers = {
+        'User-Agent':'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/109.0',
+        'Accept-Encoding':'gzip, deflate, br',
+        'Accept-Language': 'en-US,en;q=0.5'
+
+    }
+
+    session  = requests.Session()
+    request = session.get(url,headers=headers)
+    cookies = dict(request.cookies)
+    response = session.get(url, headers=headers, cookies=cookies).json()
+    rawdata = pd.DataFrame(response)
+    rawop_2 = pd.DataFrame(rawdata['records']['data'])
+    if type == 'CE':
+        ce = rawop['CE']
+        ce= pd.DataFrame(ce).dropna()
+        df = pd.DataFrame()
+        for i in range(1, len(ce)):
+            data = [dict(x) for x in ce.iloc[i].values ]
+            df = pd.concat([df, pd.DataFrame(data, index=[0])], ignore_index=True)
+
+        # print resulting dataframe
+        print(df)
+        
+    elif type == 'PE':
+        pe = rawop_2['PE']
+        pe= pd.DataFrame(pe).dropna()
+        df = pd.DataFrame()
+        for i in range(1, len(pe)):
+            data = [dict(x) for x in pe.iloc[i].values ]
+            df = pd.concat([df, pd.DataFrame(data, index=[0])], ignore_index=True)
+
+        # print resulting dataframe
+        print(df)
+    else:
+        print("System Facing Issue")
+        pass
+    
+get_premium("NIFTY", 'PE')
