@@ -1,0 +1,52 @@
+import os
+import yfinance as yf
+import matplotlib.pyplot as plt
+
+# Define the stock symbol
+stock_symbol = "RELIANCE.NS"
+
+# Define the time frame for the last 3 years
+end_date = "2023-10-24"
+start_date = "2020-10-24"
+
+# Download the stock data
+data = yf.download(stock_symbol, start=start_date, end=end_date)
+
+# Create a directory to save the images
+output_directory = "reliance_monthly_charts"
+os.makedirs(output_directory, exist_ok=True)
+
+# Loop through each month in the time frame
+for year in range(int(start_date[:4]), int(end_date[:4]) + 1):
+    for month in range(1, 13):
+        # Define the start and end dates for each month
+        month_start_date = f"{year}-{month:02d}-01"
+        if month == 12:
+            next_month = 1
+            next_year = year + 1
+        else:
+            next_month = month + 1
+            next_year = year
+        month_end_date = f"{next_year}-{next_month:02d}-01"
+        
+        # Extract data for the current month
+        month_data = data.loc[month_start_date:month_end_date]
+        
+        # Skip empty months
+        if month_data.empty:
+            continue
+        
+        # Create a plot for the month
+        plt.figure(figsize=(12, 6))
+        plt.title(f"{stock_symbol} Stock Price - {year}-{month:02d}")
+        plt.xlabel("Date")
+        plt.ylabel("Price (INR)")
+        plt.plot(month_data['Adj Close'])
+        plt.grid(True)
+        
+        # Save the plot as a JPEG image
+        image_filename = f"{output_directory}/{stock_symbol}_monthly_{year}-{month:02d}.jpg"
+        plt.savefig(image_filename, format="jpeg")
+        plt.close()
+
+print("Monthly charts saved successfully.")
